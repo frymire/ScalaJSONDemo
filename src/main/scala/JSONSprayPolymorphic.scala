@@ -3,14 +3,14 @@ import spray.json._
 import DefaultJsonProtocol._ 
 
 abstract class Parent
-case class ChildA(name: String) extends Parent
-case class ChildB(firstName: String, lastName: String) extends Parent
+case class ChildA(name: String, kind: String = "A") extends Parent
+case class ChildB(firstName: String, lastName: String, kind: String = "B") extends Parent
 case class Container(x: Parent)
 
 object PolyProtocol extends DefaultJsonProtocol {
   
-  implicit val aFmt = jsonFormat1(ChildA)
-  implicit val bFmt = jsonFormat2(ChildB)
+  implicit val aFmt = jsonFormat2(ChildA)
+  implicit val bFmt = jsonFormat3(ChildB)
 
   implicit object ParentJSONFormat extends RootJsonFormat[Parent] {
     
@@ -19,9 +19,11 @@ object PolyProtocol extends DefaultJsonProtocol {
       case b: ChildB => b.toJson
     }
 
-    def read(v: JsValue) = v match {
-      case obj: JsObject if (obj.fields.size == 2) => v.convertTo[ChildB]
-      case obj: JsObject => v.convertTo[ChildA]
+    // Use a "kind" field in the JSON to indicate which subclass to use
+    def read(v: JsValue) = v.asJsObject.fields("kind") match {
+      case JsString("A") => v.convertTo[ChildA]
+      case JsString("B") => v.convertTo[ChildB]
+      case _ => throw new Error
     }
     
   }
@@ -39,7 +41,9 @@ object JSONSprayPolymorphic extends App {
   val out = inJSON.convertTo[List[Container]]
 
   println(in)
+  println
   println(inJSON)
+  println
   println(out)
   
 }
