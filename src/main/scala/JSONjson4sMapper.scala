@@ -30,7 +30,17 @@ object JSONjson4sMapper extends App {
 
   // Extract instances from subfields of the main instance
   println
+  println( (json \ "addresses"))
   println( (json \ "addresses").extract[Map[String, Address]] )
   println( (json \ "children").extract[List[Child]] )
+  
+  
+  // Get just the top-level name instance
+  println
+  println(compact(json \ "name"))
+  
+  // Get all name instances, whether nested or not
+  println
+  println(compact(json \\ "name"))
   
 }
