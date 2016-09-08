@@ -27,8 +27,6 @@ object JSONjson4sMapper extends App {
 
   val json = parse(jsonText)
   println(json.extract[Person])
-  
-  
 
   // Extract instances from subfields of the main instance
   println

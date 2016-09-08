@@ -28,7 +28,7 @@ object GoSox extends App {
   println(ast.convertTo[Team])
 
   // Using an option type for color in Team also makes these possible
-  println("""{ "name": "Red Sox", "jersey": null }""".asJson.convertTo[Team])
-  println("""{ "name": "Red Sox" }""".asJson.convertTo[Team])
+  println("""{ "name": "Red Sox", "jersey": null }""".parseJson.convertTo[Team])
+  println("""{ "name": "Red Sox" }""".parseJson.convertTo[Team])
 
 }
