@@ -50,13 +50,21 @@ object JSONJson4s extends App {
     case JField("name", _) => ("Name", JString("Luca")) // Change the field name and value
     case JField("age", JInt(age)) => ("age", JInt(age+1)) // Extract and update the value    
   }
+  println
   println(s"Transformed: ${compact(transformed)}")
+  
+  // See a diff between two JValues
+  val Diff(changed, added, deleted) = fromString diff transformed 
+  println(s"  Changed: ${compact(changed)}")
+  println(s"  Added: ${compact(added)}")
+  println(s"  Deleted: ${compact(deleted)}")
   
   // Remove fields
   val removed = fromString removeField {
     case JField("name", _) => true
     case _ => false
   }
+  println
   println(s"Removed: ${compact(removed)}")
   
   // Filter fields
