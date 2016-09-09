@@ -14,7 +14,7 @@ object JSONjson4sMapper extends App {
   // Extract into a case class with a map field, a list field, and nested entries with an option field
   val jsonText = """
          {
-           "name": "joe", 
+           "name": "Joe", 
            "addresses": { 
              "address1": {"street": "Bulevard", "city": "Helsinki" },
              "address2": {"street": "Soho", "city": "London"}
@@ -39,8 +39,15 @@ object JSONjson4sMapper extends App {
   println
   println(compact(json \ "name"))
   
-  // Get all name instances, whether nested or not
+  // Get all name instances, whether nested or not. You have to be careful printing it, though.
+  // If you just print the values, it first tries to build a map, and since the keys all overlap
+  // it only prints the last entry. To get all three entries, iterate over the children explicitly.
   println
-  println(compact(json \\ "name"))
+  val names = (json \\ "name")
+  println(compact(names))
+  println(names.values) // just Mazy
+  names.children foreach {name => println(name.values) } // Joe, Mary, and Mazy
+  
+  // TODO: You can also serialize case classes to JSON  
   
 }

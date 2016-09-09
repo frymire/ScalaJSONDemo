@@ -4,14 +4,15 @@ import DefaultJsonProtocol._
 
 abstract class Parent
 case class ChildA(name: String, kind: String = "A") extends Parent
-case class ChildB(firstName: String, lastName: String, kind: String = "B") extends Parent
+case class ChildB(person: String, kind: String = "B") extends Parent
 case class Container(x: Parent)
 
 object PolyProtocol extends DefaultJsonProtocol {
   
   implicit val aFmt = jsonFormat2(ChildA)
-  implicit val bFmt = jsonFormat3(ChildB)
+  implicit val bFmt = jsonFormat2(ChildB)
 
+  // Since parent isn't a case class, we need to write a custom format for it
   implicit object ParentJSONFormat extends RootJsonFormat[Parent] {
     
     def write(p: Parent) = p match {
@@ -36,7 +37,7 @@ object JSONSprayPolymorphic extends App {
 
   import PolyProtocol._
 
-  val in = List(Container(ChildA("Mark Frymire")), Container(ChildB("Kurt", "Frymire")) )
+  val in = List(Container(ChildA("Mark")), Container(ChildB("Kurt")) )
   val inJSON = in.toJson
   val out = inJSON.convertTo[List[Container]]
 

@@ -36,6 +36,7 @@ object JSONJson4s extends App {
   // Access elements as JValues
   println(fromString \ "name") // JString(luca)
   println(fromString.children(1)) // JInt(26)
+  println(fromString \ "nonexistent") // JNothing
 
   // Pull out a specific field
   val name = fromString findField {
